@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any, Dict, List, Optional
 
+# pyrefly: ignore [missing-import]
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 
@@ -228,12 +229,7 @@ async def health() -> HealthResponse:
     )
 
 
-@router.get(
-    "/scheduler",
-    response_model=SchedulerResponse,
-    summary="Status scheduler",
-)
-async def scheduler_status() -> SchedulerResponse:
+def _get_scheduler_status() -> SchedulerResponse:
     sched = get_scheduler()
     return SchedulerResponse(
         running       = sched.is_running,
@@ -241,6 +237,50 @@ async def scheduler_status() -> SchedulerResponse:
         next_run_time = sched.next_run_time(),
         schedule      = f"{config.CRON_HOUR:02d}:{config.CRON_MINUTE:02d} {config.TIMEZONE}",
     )
+
+
+@router.get(
+    "/scheduler",
+    response_model=SchedulerResponse,
+    summary="Status scheduler",
+)
+async def scheduler_status() -> SchedulerResponse:
+    return _get_scheduler_status()
+
+
+@router.post(
+    "/scheduler/start",
+    response_model=SchedulerResponse,
+    summary="Mulai scheduler",
+    dependencies=[Depends(verify_api_key)],
+)
+async def start_scheduler() -> SchedulerResponse:
+    sched = get_scheduler()
+    if config.SCHEDULER_DISABLED:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="SCHEDULER_DISABLED=true di konfigurasi. Tidak bisa dijalankan.",
+        )
+    if sched.is_running:
+        return _get_scheduler_status()
+    
+    await sched.start()
+    return _get_scheduler_status()
+
+
+@router.post(
+    "/scheduler/stop",
+    response_model=SchedulerResponse,
+    summary="Hentikan scheduler",
+    dependencies=[Depends(verify_api_key)],
+)
+async def stop_scheduler() -> SchedulerResponse:
+    sched = get_scheduler()
+    if not sched.is_running:
+        return _get_scheduler_status()
+    
+    await sched.stop()
+    return _get_scheduler_status()
 
 
 # ══════════════════════════════════════════════════════════════════════════════

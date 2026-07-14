@@ -11,8 +11,11 @@ if sys.platform == "win32":
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+# pyrefly: ignore [missing-import]
 from fastapi import FastAPI
+# pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
+# pyrefly: ignore [missing-import]
 from fastapi.responses import JSONResponse
 
 from core import config
@@ -26,22 +29,22 @@ logger = get_logger("app.main")
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info(
-        f"\n{'═'*50}\n"
-        f"  {config.APP_NAME} v{config.APP_VERSION} — START\n"
-        f"  SERPAPI_KEY : {'✓ diset' if config.SERPAPI_KEY else '✗ BELUM DISET'}\n"
+        f"\n{'='*50}\n"
+        f"  {config.APP_NAME} v{config.APP_VERSION} - START\n"
+        f"  SERPAPI_KEY : {'[OK] diset' if config.SERPAPI_KEY else '[MISSING] BELUM DISET'}\n"
         f"  Data dir    : {config.DATA_DIR}\n"
-        f"{'═'*50}"
+        f"{'='*50}"
     )
 
     if not config.SERPAPI_KEY:
         logger.warning(
-            "⚠ SERPAPI_KEY belum diset! "
+            "[WARNING] SERPAPI_KEY belum diset! "
             "Tambahkan ke .env: SERPAPI_KEY=your_key_here"
         )
 
     if not config.API_KEY:
         logger.warning(
-            "⚠ API_KEY belum diset! "
+            "[WARNING] API_KEY belum diset! "
             "Endpoint yang dilindungi tidak dapat diakses. "
             "Tambahkan ke .env: API_KEY=random-secret-key"
         )
@@ -56,7 +59,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
 
     await scheduler.stop()
-    logger.info(f"{'═'*50}\n  {config.APP_NAME} — SHUTDOWN\n{'═'*50}")
+    logger.info(f"{'='*50}\n  {config.APP_NAME} - SHUTDOWN\n{'='*50}")
 
 
 app = FastAPI(
