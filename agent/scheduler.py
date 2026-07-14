@@ -59,7 +59,12 @@ class MarketScheduler:
         sched.add_listener(_on_error,    EVENT_JOB_ERROR)
         sched.add_job(
             run_once,
-            CronTrigger(hour=config.CRON_HOUR, minute=config.CRON_MINUTE, timezone=config.TIMEZONE),
+            CronTrigger(
+                day=config.CRON_DAY, 
+                hour=config.CRON_HOUR, 
+                minute=config.CRON_MINUTE, 
+                timezone=config.TIMEZONE
+            ),
             id=_JOB_ID,
             name="Market Intelligence Fetch",
         )
@@ -69,7 +74,7 @@ class MarketScheduler:
 
         next_run = sched.get_job(_JOB_ID).next_run_time
         logger.info(
-            f"[Scheduler] Dijadwalkan pukul "
+            f"[Scheduler] Dijadwalkan tanggal {config.CRON_DAY} setiap bulan pukul "
             f"{config.CRON_HOUR:02d}:{config.CRON_MINUTE:02d} {config.TIMEZONE}. "
             f"Run berikutnya: {next_run}"
         )

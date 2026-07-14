@@ -235,7 +235,7 @@ def _get_scheduler_status() -> SchedulerResponse:
         running       = sched.is_running,
         disabled      = config.SCHEDULER_DISABLED,
         next_run_time = sched.next_run_time(),
-        schedule      = f"{config.CRON_HOUR:02d}:{config.CRON_MINUTE:02d} {config.TIMEZONE}",
+        schedule      = f"Setiap tanggal {config.CRON_DAY}, pukul {config.CRON_HOUR:02d}:{config.CRON_MINUTE:02d} {config.TIMEZONE}",
     )
 
 

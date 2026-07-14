@@ -50,6 +50,7 @@ DATA_DIR:       Path = _ROOT / os.getenv("DATA_DIR", "data/runs")
 MAX_RUNS_KEPT:  int  = _int("DATA_MAX_RUNS_KEPT", 30)
 
 # ── Scheduler ────────────────────────────────────────────────────────────────
+CRON_DAY:           int  = _int("CRON_DAY", 1)
 CRON_HOUR:          int  = _int("CRON_HOUR", 19)
 CRON_MINUTE:        int  = _int("CRON_MINUTE", 30)
 TIMEZONE:           str  = os.getenv("TIMEZONE", "Asia/Jakarta")
