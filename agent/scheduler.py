@@ -4,8 +4,11 @@ from __future__ import annotations
 import asyncio
 from typing import Optional
 
+# pyrefly: ignore [missing-import]
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+# pyrefly: ignore [missing-import]
 from apscheduler.triggers.cron import CronTrigger
+# pyrefly: ignore [missing-import]
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED, JobExecutionEvent
 
 from core import config
